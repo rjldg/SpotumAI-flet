@@ -53,6 +53,8 @@ def predict(image_path):
 def main(page: ft.Page):
     page.title = "SPOTUM AI"
     page.theme_mode = ft.ThemeMode.DARK
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
 
     def process_image(e):
         if file_picker.result and file_picker.result.files:
@@ -61,21 +63,40 @@ def main(page: ft.Page):
 
             if os.path.exists(image_path):
                 predicted_class, confidence = predict(image_path)
-                result_text.value = f"Prediction: {predicted_class}\nConfidence: {confidence:.2f}"
+                
+                result_pred.value = f"Prediction: {predicted_class}"
+                result_conf.value = f"Confidence: {confidence:.2f}"
                 result_image.src = image_path
+                
+                if predicted_class == "Normal":
+                    result_pred.color = "green"
+                else:
+                    result_pred.color = "red"
+                
+                if confidence > 0.8:
+                    result_conf.color = "green"
+                elif confidence > 0.5:
+                    result_conf.color = "orange"
+                else:
+                    result_conf.color = "red"
+                
                 pick_file_button.disabled = True
-                result_text.update()
+                result_pred.update()
+                result_conf.update()
                 result_image.update()
                 pick_file_button.update()
             else:
-                result_text.value = f"Error: File '{image_path}' does not exist."
-                result_text.update()
+                result_pred.value = f"Error: File '{image_path}' does not exist."
+                result_pred.update()
+                result_conf.update()
 
     def restart_process(e):
-        result_text.value = ""
+        result_pred.value = ""
+        result_conf.value = ""
         result_image.src = ""
         pick_file_button.disabled = False
-        result_text.update()
+        result_pred.update()
+        result_conf.update()
         result_image.update()
         pick_file_button.update()
 
@@ -84,16 +105,27 @@ def main(page: ft.Page):
 
     pick_file_button = ft.ElevatedButton("Pick Image", on_click=lambda _: file_picker.pick_files())
     restart_button = ft.ElevatedButton("Restart", on_click=restart_process)
-    result_text = ft.Text()
-    result_image = ft.Image(width=300, height=300)
+    
+    result_pred = ft.Text(size=20)
+    result_conf = ft.Text(size=20)
+    result_image = ft.Image(width=300, height=300, border_radius=ft.border_radius.all(10))
 
     page.add(
-        ft.Column([
-            pick_file_button,
-            result_text,
-            result_image,
-            restart_button
-        ])
+        ft.Container(
+            content=ft.Column(
+                [
+                    pick_file_button,
+                    result_pred,
+                    result_conf,
+                    result_image,
+                    restart_button
+                ],
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                spacing=20
+            ),
+            alignment=ft.alignment.center,
+        )
     )
 
 ft.app(target=main)
