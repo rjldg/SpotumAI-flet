@@ -93,7 +93,7 @@ def main(page: ft.Page):
     def restart_process(e):
         result_pred.value = ""
         result_conf.value = ""
-        result_image.src = ""
+        result_image.src = "assets/logo.png"
         pick_file_button.disabled = False
         result_pred.update()
         result_conf.update()
@@ -108,7 +108,7 @@ def main(page: ft.Page):
     
     result_pred = ft.Text(size=20)
     result_conf = ft.Text(size=20)
-    result_image = ft.Image(width=300, height=300, border_radius=ft.border_radius.all(10))
+    result_image = ft.Image(src="assets/logo.png", width=350, height=350, border_radius=ft.border_radius.all(10))
 
     page.add(
         ft.Container(
@@ -122,7 +122,7 @@ def main(page: ft.Page):
                 ],
                 alignment=ft.MainAxisAlignment.CENTER,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                spacing=20
+                spacing=10
             ),
             alignment=ft.alignment.center,
         )
