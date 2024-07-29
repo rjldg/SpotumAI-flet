@@ -57,13 +57,12 @@ def main(page: ft.Page):
     def process_image(e):
         if file_picker.result and file_picker.result.files:
             image_path = file_picker.result.files[0].path
+            print(image_path)
 
             if os.path.exists(image_path):
                 predicted_class, confidence = predict(image_path)
-                image = Image.open(image_path)
-                image.save("temp_display_image.png")
                 result_text.value = f"Prediction: {predicted_class}\nConfidence: {confidence:.2f}"
-                result_image.src = "temp_display_image.png"
+                result_image.src = image_path
                 pick_file_button.disabled = True
                 result_text.update()
                 result_image.update()
